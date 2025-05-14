@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 
 from net.layers import Layer
 from net.models._base import Model
@@ -84,12 +85,49 @@ class Sequential(Model):
 
     def predict(self, x: np.ndarray) -> np.ndarray:
         """
-        Compares the output of the forward function with a threshold value (0.5) to generate predictions
-        indicating whether each input element meets the defined criteria.
+        Generates predictions from model outputs.
 
-        :param x: Input data as a numpy ndarray.
-        :type x: np.ndarray
-        :return: Predicted boolean values represented as a numpy ndarray.
-        :rtype: np.ndarray
+        - For binary classification (output shape [N, 1]), returns 0 or 1 using a 0.5 threshold.
+        - For multiclass classification (output shape [N, C]), returns class indices via argmax.
+
+        :param x: Input data as a NumPy array.
+        :return: Predicted class labels (0/1 for binary, class indices for multiclass).
         """
-        return self.forward(x) > 0.5
+        output = self.forward(x)
+
+        if output.shape[1] == 1:
+            return (output > 0.5).astype(int)
+
+        return np.argmax(output, axis=1)
+
+    def save(self, filepath: str) -> None:
+        """
+        Saves the model to the specified file path, including architecture and parameters.
+        """
+        save_data: dict[str, list] = {
+            "layer_types": [layer.__class__.__name__ for layer in self.layers],
+            "layer_params": []
+        }
+
+        for layer in self.layers:
+            params = {}
+            for attr in ["W", "b"]:  # Adjust as needed for more complex layers
+                if hasattr(layer, attr):
+                    params[attr] = getattr(layer, attr)
+            save_data["layer_params"].append(params)
+
+        with open(filepath, "wb") as f:
+            pickle.dump(save_data, f)
+
+    def load(self, filepath: str) -> None:
+        """
+        Loads the model parameters from the specified file.
+        Note: Assumes same model structure is used during reloading.
+        """
+        with open(filepath, "rb") as f:
+            data = pickle.load(f)
+
+        for layer, params in zip(self.layers, data["layer_params"]):
+            for name, value in params.items():
+                if hasattr(layer, name):
+                    setattr(layer, name, value)
