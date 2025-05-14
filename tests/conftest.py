@@ -3,11 +3,26 @@ import numpy as np
 
 def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
     """
-    Perform gradient checking on a layer with parameters (W, b).
-    This assumes:
-      - forward(x): produces scalar output (or sum is used)
-      - backward(grad_output): computes gradients
-      - layer.dW, layer.db exist after backward
+    Performs a numerical gradient check for a given layer's weight and bias parameters.
+
+    This function is used to verify the correctness of the gradients computed by a layer's
+    `backward` method by comparing them with numerically approximated gradients. It perturbs
+    each parameter's value slightly in both positive and negative directions, computes the
+    resulting change in the output using the `forward` method, and calculates an approximate
+    gradient using finite differences. These approximate gradients are then compared with the
+    analytical gradients `dW` and `db` provided by the layer after the backward pass.
+
+    :param layer: The layer object for which the gradient check is being performed. The layer
+        should have attributes `W` (weights), `b` (biases), and provide `forward` and
+        `backward` methods. The gradients computed by the layer must be available in `dW`
+        and `db` attributes respectively.
+    :type layer: Any
+    :param x: Input data to the layer used for testing. It is passed through the layer's
+        `forward` and `backward` methods during gradient checking.
+    :param eps: Small perturbation used for numerical differentiation to approximate
+        gradients. Defaults to 1e-5.
+    :return: None. This function either completes successfully or raises an assertion
+        error if any of the gradient checks fail.
     """
     grad_output = np.ones_like(layer.forward(x))
     layer.forward(x)
