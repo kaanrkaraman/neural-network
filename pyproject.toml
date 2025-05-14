@@ -19,5 +19,29 @@ dependencies = [
 jupyterlab = "^4.4.2"
 pytest = "^8.3.5"
 matplotlib = "^3.10.3"
-ruff = "^0.11.9"
+black = "^25.1.0"
+isort = "^6.0.1"
+flake8 = "^7.2.0"
 
+[tool.black]
+line-length = 88
+target-version = ["py39"]
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+  | __pycache__
+  | notebooks
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["net"]
+known_third_party = ["numpy"]
+skip = ["__init__.py"]
+src_paths = ["net", "tests"]

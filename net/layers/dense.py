@@ -1,0 +1,62 @@
+import numpy as np
+
+from net.layers._base import Layer
+
+
+class Dense(Layer):
+    """
+    Implements a fully connected (dense) layer in a neural network.
+
+    This class represents a dense layer that connects input and output features
+    using weights and biases. It performs linear transformations during
+    the forward pass and computes gradients for weights and biases during
+    the backward pass. The update method applies gradient descent for parameter
+    updates.
+
+    :ivar W: Weight matrix of shape (in_features, out_features) initialized with
+        values to break symmetry.
+    :type W: np.ndarray
+    :ivar b: Bias vector of shape (1, out_features) initialized to zeros.
+    :type b: np.ndarray
+    :ivar dW: Gradient of the loss with respect to the weight matrix,
+        of shape (in_features, out_features).
+    :type dW: np.ndarray
+    :ivar db: Gradient of the loss with respect to the bias vector,
+        of shape (1, out_features).
+    :type db: np.ndarray
+    :ivar input: Input to the layer, stored during the forward pass,
+        of shape (batch_size, in_features).
+    :type input: np.ndarray
+    :ivar output: Output of the layer from the forward pass,
+        of shape (batch_size, out_features).
+    :type output: np.ndarray
+    """
+
+    def __init__(self, in_features: int, out_features: int):
+        super().__init__()
+        limit = np.sqrt(6 / (in_features + out_features))
+        self.W = np.random.uniform(-limit, limit, (in_features, out_features))
+        self.b = np.zeros((1, out_features))
+
+        self.dW = np.zeros_like(self.W)
+        self.db = np.zeros_like(self.b)
+
+    def forward(self, x: np.ndarray) -> np.ndarray:
+        self.input = x  # (batch_size, in_features)
+        self.output = x @ self.W + self.b  # (batch_size, out_features)
+        return self.output
+
+    def backward(self, grad_output: np.ndarray) -> np.ndarray:
+        """
+        grad_output: (batch_size, out_features)
+        """
+        # Gradient w.r.t. weights and biases
+        self.dW = self.input.T @ grad_output  # (in_features, out_features)
+        self.db = np.sum(grad_output, axis=0, keepdims=True)  # (1, out_features)
+
+        grad_input = grad_output @ self.W.T  # (batch_size, in_features)
+        return grad_input
+
+    def update(self, learning_rate: float) -> None:
+        self.W -= learning_rate * self.dW
+        self.b -= learning_rate * self.db
