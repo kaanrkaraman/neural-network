@@ -4,6 +4,8 @@ import pytest
 from net.layers.dense import Dense
 from net.layers.flatten import Flatten
 
+from tests.conftest import numerical_gradient_check
+
 
 @pytest.fixture
 def input_tensor_3d():
@@ -15,56 +17,6 @@ def input_tensor_3d():
 def input_tensor_2d():
     """2D input for Dense layer: shape (batch=2, features=4)"""
     return np.random.randn(2, 4)
-
-
-def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
-    """
-    Perform gradient checking on a layer by comparing its analytical gradients
-    with numerically approximated gradients.
-
-    Assumes the layer has been forward-called with x.
-    """
-    grad_output = np.ones_like(layer.forward(x))
-    layer.forward(x)
-    layer.backward(grad_output)
-
-    # Check dW
-    for i in range(layer.W.shape[0]):
-        for j in range(layer.W.shape[1]):
-            W_orig = layer.W[i, j]
-            layer.W[i, j] = W_orig + eps
-            plus = layer.forward(x).sum()
-            layer.W[i, j] = W_orig - eps
-            minus = layer.forward(x).sum()
-            layer.W[i, j] = W_orig
-
-            numerical_grad = (plus - minus) / (2 * eps)
-            np.testing.assert_allclose(
-                layer.dW[i, j],
-                numerical_grad,
-                rtol=1e-4,
-                atol=1e-6,
-                err_msg=f"Gradient check failed for W[{i},{j}]",
-            )
-
-    # Check db
-    for j in range(layer.b.shape[1]):
-        b_orig = layer.b[0, j]
-        layer.b[0, j] = b_orig + eps
-        plus = layer.forward(x).sum()
-        layer.b[0, j] = b_orig - eps
-        minus = layer.forward(x).sum()
-        layer.b[0, j] = b_orig
-
-        numerical_grad = (plus - minus) / (2 * eps)
-        np.testing.assert_allclose(
-            layer.db[0, j],
-            numerical_grad,
-            rtol=1e-4,
-            atol=1e-6,
-            err_msg=f"Gradient check failed for b[{j}]",
-        )
-
 
 def test_flatten_forward_shape(input_tensor_3d):
     flatten = Flatten()
@@ -111,6 +63,16 @@ def test_dense_backward_output_shape(input_tensor_2d):
     grad_output = np.ones_like(output)
     grad_input = dense.backward(grad_output)
     assert grad_input.shape == input_tensor_2d.shape
+
+
+def test_dense_forward_known_output():
+    dense = Dense(in_features=2, out_features=2)
+    dense.W = np.array([[1.0, 2.0], [3.0, 4.0]])
+    dense.b = np.array([[0.5, -0.5]])
+    x = np.array([[1.0, 2.0]])
+    expected = np.array([[1.0*1.0 + 2.0*3.0 + 0.5, 1.0*2.0 + 2.0*4.0 - 0.5]])  # shape (1,2)
+    output = dense.forward(x)
+    np.testing.assert_allclose(output, expected, rtol=1e-6)
 
 
 def test_dense_gradient_check(input_tensor_2d):
