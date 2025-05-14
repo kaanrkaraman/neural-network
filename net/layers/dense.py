@@ -60,3 +60,19 @@ class Dense(Layer):
     def update(self, learning_rate: float) -> None:
         self.W -= learning_rate * self.dW
         self.b -= learning_rate * self.db
+
+    def train(self, x: np.ndarray, y: np.ndarray) -> None:
+        """
+        This method is not applicable for the Dense layer as it does not
+        perform training directly. Instead, it should be used in a model
+        context where the forward and backward passes are handled.
+        """
+        raise NotImplementedError("Train method is not applicable for Dense layer.")
+
+    def eval(self, x: np.ndarray, y: np.ndarray) -> float:
+        """
+        This method is not applicable for the Dense layer as it does not
+        perform evaluation directly. Instead, it should be used in a model
+        context where the forward and backward passes are handled.
+        """
+        raise NotImplementedError("Eval method is not applicable for Dense layer.")
