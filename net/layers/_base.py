@@ -3,6 +3,12 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
+class Parameter:
+    def __init__(self, value: np.ndarray):
+        self.value = value
+        self.grad = None
+
+
 class Layer(ABC):
     """
     Defines an abstract base class for layers to be used in neural networks or other
@@ -82,24 +88,20 @@ class Layer(ABC):
         pass
 
     @abstractmethod
-    def train(self, x: np.ndarray, y: np.ndarray) -> None:
+    def train(self) -> None:
         """
         Abstract method for training a model on provided input data and labels. This method
         must be implemented by subclasses to define the specific steps required to train
         a machine learning model or similar. It modifies the state of the object to adapt
         based on the given data.
 
-        :param x: Input data for training.
-        :type x: numpy.ndarray
-        :param y: Target labels corresponding to the input data.
-        :type y: numpy.ndarray
         :return: None
         :rtype: None
         """
         pass
 
     @abstractmethod
-    def eval(self, x: np.ndarray, y: np.ndarray) -> float:
+    def eval(self) -> None:
         """
         Abstract method to evaluate a given set of inputs and compute a corresponding metric or result.
 
@@ -108,8 +110,6 @@ class Layer(ABC):
         evaluation typically considers both x and y inputs, where x could represent the input data
         or features and y could denote labels or target values.
 
-        :param x: Input data or feature set represented as a NumPy array.
-        :param y: Target values or labels represented as a NumPy array.
         :return: A computed evaluation result as a float value.
         """
         pass

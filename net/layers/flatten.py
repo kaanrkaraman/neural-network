@@ -39,7 +39,7 @@ class Flatten(Layer):
         # Flatten has no parameters to update
         pass
 
-    def train(self, x: np.ndarray, y: np.ndarray) -> None:
+    def train(self) -> None:
         """
         This method is not applicable for the Flatten layer as it does not
         perform training directly. Instead, it should be used in a model
@@ -47,7 +47,7 @@ class Flatten(Layer):
         """
         raise NotImplementedError("Train method is not applicable for Flatten layer.")
 
-    def eval(self, x: np.ndarray, y: np.ndarray) -> float:
+    def eval(self) -> None:
         """
         This method is not applicable for the Flatten layer as it does not
         perform evaluation directly. Instead, it should be used in a model

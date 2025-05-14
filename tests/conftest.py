@@ -1,5 +1,7 @@
 import numpy as np
 
+from net.layers import Parameter
+
 
 def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
     """
@@ -29,14 +31,14 @@ def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
     layer.backward(grad_output)
 
     # Check dW
-    for i in range(layer.W.shape[0]):
-        for j in range(layer.W.shape[1]):
-            original = layer.W[i, j]
-            layer.W[i, j] = original + eps
+    for i in range(layer.W.value.shape[0]):
+        for j in range(layer.W.value.shape[1]):
+            original = layer.W.value[i, j]
+            layer.W.value[i, j] = original + eps
             plus = layer.forward(x).sum()
-            layer.W[i, j] = original - eps
+            layer.W.value[i, j] = original - eps
             minus = layer.forward(x).sum()
-            layer.W[i, j] = original  # restore
+            layer.W.value[i, j] = original  # restore
 
             numerical = (plus - minus) / (2 * eps)
             analytic = layer.dW[i, j]
@@ -49,13 +51,13 @@ def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
             )
 
     # Check db
-    for j in range(layer.b.shape[1]):
-        original = layer.b[0, j]
-        layer.b[0, j] = original + eps
+    for j in range(layer.b.value.shape[1]):
+        original = layer.b.value[0, j]
+        layer.b.value[0, j] = original + eps
         plus = layer.forward(x).sum()
-        layer.b[0, j] = original - eps
+        layer.b.value[0, j] = original - eps
         minus = layer.forward(x).sum()
-        layer.b[0, j] = original  # restore
+        layer.b.value[0, j] = original  # restore
 
         numerical = (plus - minus) / (2 * eps)
         analytic = layer.db[0, j]

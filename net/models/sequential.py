@@ -1,5 +1,6 @@
-import numpy as np
 import pickle
+
+import numpy as np
 
 from net.layers import Layer
 from net.models._base import Model
@@ -106,7 +107,7 @@ class Sequential(Model):
         """
         save_data: dict[str, list] = {
             "layer_types": [layer.__class__.__name__ for layer in self.layers],
-            "layer_params": []
+            "layer_params": [],
         }
 
         for layer in self.layers:

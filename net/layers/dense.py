@@ -1,6 +1,6 @@
 import numpy as np
 
-from net.layers._base import Layer
+from net.layers._base import Layer, Parameter
 
 
 class Dense(Layer):
@@ -15,9 +15,9 @@ class Dense(Layer):
 
     :ivar W: Weight matrix of shape (in_features, out_features) initialized with
         values to break symmetry.
-    :type W: np.ndarray
+    :type W: Parameter
     :ivar b: Bias vector of shape (1, out_features) initialized to zeros.
-    :type b: np.ndarray
+    :type b: Parameter
     :ivar dW: Gradient of the loss with respect to the weight matrix,
         of shape (in_features, out_features).
     :type dW: np.ndarray
@@ -35,15 +35,17 @@ class Dense(Layer):
     def __init__(self, in_features: int, out_features: int):
         super().__init__()
         limit = np.sqrt(6 / (in_features + out_features))
-        self.W = np.random.uniform(-limit, limit, (in_features, out_features))
-        self.b = np.zeros((1, out_features))
+        self.W = Parameter(
+            np.random.uniform(-limit, limit, (in_features, out_features))
+        )
+        self.b = Parameter(np.zeros((1, out_features)))
 
-        self.dW = np.zeros_like(self.W)
-        self.db = np.zeros_like(self.b)
+        self.dW = np.zeros_like(self.W.value)
+        self.db = np.zeros_like(self.b.value)
 
     def forward(self, x: np.ndarray) -> np.ndarray:
         self.input = x  # (batch_size, in_features)
-        self.output = x @ self.W + self.b  # (batch_size, out_features)
+        self.output = x @ self.W.value + self.b.value  # (batch_size, out_features)
         return self.output
 
     def backward(self, grad_output: np.ndarray) -> np.ndarray:
@@ -54,14 +56,17 @@ class Dense(Layer):
         self.dW = self.input.T @ grad_output  # (in_features, out_features)
         self.db = np.sum(grad_output, axis=0, keepdims=True)  # (1, out_features)
 
-        grad_input = grad_output @ self.W.T  # (batch_size, in_features)
+        self.W.grad = self.dW
+        self.b.grad = self.db
+
+        grad_input = grad_output @ self.W.value.T  # (batch_size, in_features)
         return grad_input
 
     def update(self, learning_rate: float) -> None:
-        self.W -= learning_rate * self.dW
-        self.b -= learning_rate * self.db
+        self.W.value -= learning_rate * self.dW
+        self.b.value -= learning_rate * self.db
 
-    def train(self, x: np.ndarray, y: np.ndarray) -> None:
+    def train(self) -> None:
         """
         This method is not applicable for the Dense layer as it does not
         perform training directly. Instead, it should be used in a model
@@ -69,7 +74,7 @@ class Dense(Layer):
         """
         raise NotImplementedError("Train method is not applicable for Dense layer.")
 
-    def eval(self, x: np.ndarray, y: np.ndarray) -> float:
+    def eval(self) -> None:
         """
         This method is not applicable for the Dense layer as it does not
         perform evaluation directly. Instead, it should be used in a model
