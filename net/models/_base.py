@@ -5,54 +5,99 @@ import numpy as np
 
 class Model(ABC):
     """
-    Abstract base class for all models.
+    An abstract base class defining the core structure and operations of a model.
+
+    This class serves as a blueprint for deriving specific model implementations, particularly
+    useful in machine learning and related applications. Subclasses are required to implement
+    all abstract methods, which include forward and backward computations, parameter updates,
+    prediction, and saving/loading of the model's state.
     """
 
     @abstractmethod
     def forward(self, x: np.ndarray) -> np.ndarray:
         """
-        Forward pass through the model.
+        An abstract method defining the forward computation.
 
-        Parameters:
-        - x (np.ndarray): Input tensor.
+        This method is intended to be overridden in subclasses to define
+        specific operations on the input data. It accepts an input array
+        and typically returns a transformed array of the same or modified
+        shape, depending on the operation being implemented.
 
-        Returns:
-        - np.ndarray: Output tensor.
+        :param x: Input array on which the forward operation will be
+            computed.
+        :type x: numpy.ndarray
+
+        :return: The resulting array after performing the forward
+            operation.
+        :rtype: numpy.ndarray
         """
         pass
 
     @abstractmethod
     def backward(self, grad_output: np.ndarray) -> np.ndarray:
         """
-        Backward pass through the model.
+        Computes the gradient of the output with respect to the input during backpropagation.
 
-        Parameters:
-        - grad_output (np.ndarray): Gradient from the loss.
+        The method must be implemented in a subclass and is responsible for defining how
+        to compute the gradients for a specific operation. This operation is fundamental
+        for enabling automatic differentiation in machine learning models.
 
-        Returns:
-        - np.ndarray: Gradient w.r.t. input.
+        :param grad_output: The gradient of the loss with respect to the output of the layer.
+        :type grad_output: np.ndarray
+        :return: The gradient of the loss with respect to the input of the layer.
+        :rtype: np.ndarray
         """
         pass
 
     @abstractmethod
     def update(self, learning_rate: float) -> None:
         """
-        Update model parameters using computed gradients.
+        Abstract method for updating internal parameters or performing necessary updates
+        based on the given learning rate. Implementations should provide the specific
+        logic for how the update is handled.
 
-        Parameters:
-        - learning_rate (float): Learning rate for gradient descent.
+        :param learning_rate: The learning rate to guide the update. Must be a floating-point
+            value defining the step size in optimization processes.
+        :return: None
         """
         pass
 
     @abstractmethod
     def predict(self, x: np.ndarray) -> np.ndarray:
         """
-        Run inference (without training logic).
+        An abstract method that makes predictions based on input data. This method must
+        be implemented by any subclass to define the specific prediction logic.
 
-        Parameters:
-        - x (np.ndarray): Input tensor.
+        :param x: An array of input data represented as a NumPy ndarray. The structure
+            and expected formatting of the data will depend on the specific implementation
+            of this method in a subclass.
+        :return: A NumPy ndarray containing the predicted values or results corresponding
+            to the input data.
+        """
+        pass
 
-        Returns:
-        - np.ndarray: Predicted output.
+    @abstractmethod
+    def save(self, filepath: str) -> None:
+        """
+        Saves the current state or data to the specified file at the given file path.
+        This method should be implemented in subclasses and is expected to handle
+        all necessary actions to persist the data into the file system.
+
+        :param filepath: The path to the file where the data should be saved.
+        :type filepath: str
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def load(self, filepath: str) -> None:
+        """
+        Loads the state or data from the specified file at the given file path.
+        This method should be implemented in subclasses and is expected to handle
+        all necessary actions to retrieve the data from the file system.
+
+        :param filepath: The path to the file from which the data should be loaded.
+        :type filepath: str
+        :return: None
         """
         pass
