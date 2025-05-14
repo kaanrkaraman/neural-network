@@ -1,5 +1,4 @@
 import numpy as np
-import pytest
 
 
 def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
@@ -27,8 +26,11 @@ def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
             numerical = (plus - minus) / (2 * eps)
             analytic = layer.dW[i, j]
             np.testing.assert_allclose(
-                analytic, numerical, rtol=1e-4, atol=1e-6,
-                err_msg=f"Gradient check failed at W[{i},{j}]"
+                analytic,
+                numerical,
+                rtol=1e-4,
+                atol=1e-6,
+                err_msg=f"Gradient check failed at W[{i},{j}]",
             )
 
     # Check db
@@ -43,6 +45,9 @@ def numerical_gradient_check(layer, x: np.ndarray, eps: float = 1e-5):
         numerical = (plus - minus) / (2 * eps)
         analytic = layer.db[0, j]
         np.testing.assert_allclose(
-            analytic, numerical, rtol=1e-4, atol=1e-6,
-            err_msg=f"Gradient check failed at b[{j}]"
+            analytic,
+            numerical,
+            rtol=1e-4,
+            atol=1e-6,
+            err_msg=f"Gradient check failed at b[{j}]",
         )

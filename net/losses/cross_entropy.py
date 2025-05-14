@@ -62,4 +62,4 @@ class CrossEntropy(Loss):
                  predictions.
         :rtype: np.ndarray
         """
-        return -self.target / self.pred
+        return -self.target / (self.pred * self.pred.shape[0])

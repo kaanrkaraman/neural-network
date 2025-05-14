@@ -3,7 +3,6 @@ import pytest
 
 from net.layers.dense import Dense
 from net.layers.flatten import Flatten
-
 from tests.conftest import numerical_gradient_check
 
 
@@ -17,6 +16,7 @@ def input_tensor_3d():
 def input_tensor_2d():
     """2D input for Dense layer: shape (batch=2, features=4)"""
     return np.random.randn(2, 4)
+
 
 def test_flatten_forward_shape(input_tensor_3d):
     flatten = Flatten()
@@ -70,7 +70,9 @@ def test_dense_forward_known_output():
     dense.W = np.array([[1.0, 2.0], [3.0, 4.0]])
     dense.b = np.array([[0.5, -0.5]])
     x = np.array([[1.0, 2.0]])
-    expected = np.array([[1.0*1.0 + 2.0*3.0 + 0.5, 1.0*2.0 + 2.0*4.0 - 0.5]])  # shape (1,2)
+    expected = np.array(
+        [[1.0 * 1.0 + 2.0 * 3.0 + 0.5, 1.0 * 2.0 + 2.0 * 4.0 - 0.5]]
+    )  # shape (1,2)
     output = dense.forward(x)
     np.testing.assert_allclose(output, expected, rtol=1e-6)
 

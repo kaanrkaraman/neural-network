@@ -18,4 +18,4 @@ class MeanSquaredError(Loss):
 
     def backward(self) -> np.ndarray:
         assert self.pred is not None and self.target is not None
-        return (2 / self.pred.shape[0]) * (self.pred - self.target)
+        return (self.pred - self.target) * (2 / self.pred.size)
