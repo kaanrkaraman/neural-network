@@ -1,9 +1,9 @@
 import numpy as np
 
 from net.losses import Loss
-from net.losses.binary_cross_entropy import BinaryCrossEntropy
-from net.losses.cross_entropy import CrossEntropy
-from net.losses.mse import MeanSquaredError
+from net.losses.classification.binary_cross_entropy import BinaryCrossEntropy
+from net.losses.classification.cross_entropy import CrossEntropy
+from net.losses.regression.mse import MeanSquaredError
 
 
 def numerical_gradient_loss(
