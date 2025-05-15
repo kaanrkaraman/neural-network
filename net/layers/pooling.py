@@ -9,8 +9,8 @@ class MaxPool2D(Layer):
 
     Performs max pooling on 4D input tensors with shape (N, C, H, W).
 
-    :param kernel_size: int or tuple, window size
-    :param stride: int or tuple, step size between pooling regions
+    :ivar kernel_size: int or tuple, window size
+    :ivar stride: int or tuple, step size between pooling regions
     """
 
     def __init__(self, kernel_size, stride=None):
@@ -77,7 +77,7 @@ class MaxPool2D(Layer):
                         w_end = w_start + Kw
 
                         dx[n, c, h_start:h_end, w_start:w_end] += (
-                                grad_output[n, c, h, w] * mask
+                            grad_output[n, c, h, w] * mask
                         )
 
         return dx

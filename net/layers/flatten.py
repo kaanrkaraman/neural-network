@@ -45,7 +45,7 @@ class Flatten(Layer):
         perform training directly. Instead, it should be used in a model
         context where the forward and backward passes are handled.
         """
-        raise NotImplementedError("Train method is not applicable for Flatten layer.")
+        pass
 
     def eval(self) -> None:
         """
@@ -53,4 +53,4 @@ class Flatten(Layer):
         perform evaluation directly. Instead, it should be used in a model
         context where the forward and backward passes are handled.
         """
-        raise NotImplementedError("Eval method is not applicable for Flatten layer.")
+        pass

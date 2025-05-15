@@ -30,7 +30,7 @@ class Dropout(Layer):
         if self.p >= 1.0:
             raise ValueError("Dropout probability must be < 1.0")
 
-        self.mask = (np.random.rand(*x.shape) >= self.p)
+        self.mask = np.random.rand(*x.shape) >= self.p
         return x * self.mask / (1 - self.p)
 
     def backward(self, grad_output: np.ndarray) -> np.ndarray:

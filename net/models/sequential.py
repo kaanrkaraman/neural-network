@@ -21,7 +21,11 @@ class Sequential(Model):
     :type layers: list[Layer]
     """
 
-    def __init__(self, layers: list[Layer]):
+    def __init__(self, layers: list[Layer]) -> None:
+        """
+
+        :rtype: None
+        """
         self.layers = layers
 
     def forward(self, x: np.ndarray) -> np.ndarray:
@@ -100,6 +104,16 @@ class Sequential(Model):
             return (output > 0.5).astype(int)
 
         return np.argmax(output, axis=1)
+
+    def train(self) -> None:
+        for layer in self.layers:
+            if hasattr(layer, "train"):
+                layer.train()
+
+    def eval(self) -> None:
+        for layer in self.layers:
+            if hasattr(layer, "eval"):
+                layer.eval()
 
     def save(self, filepath: str) -> None:
         """

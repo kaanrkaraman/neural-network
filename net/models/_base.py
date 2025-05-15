@@ -77,6 +77,32 @@ class Model(ABC):
         pass
 
     @abstractmethod
+    def train(self) -> None:
+        """
+        An abstract base class method intended to be overridden in subclasses for implementing
+        custom training logic. This method must be implemented by any concrete subclass to
+        enable the execution of specific training-related processes. The implementation defines
+        how the training operation is executed and what resources or techniques it requires.
+
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def eval(self):
+        """
+        An interface for defining the structure of classes that must
+        implement an eval method. Classes inheriting from this interface
+        are required to provide an implementation of the eval method.
+
+        Classes using this interface are expected to handle their
+        own specific logic inside the eval method.
+
+        :return: None
+        """
+        pass
+
+    @abstractmethod
     def save(self, filepath: str) -> None:
         """
         Saves the current state or data to the specified file at the given file path.

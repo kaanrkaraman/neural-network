@@ -13,23 +13,10 @@ class Dense(Layer):
     the backward pass. The update method applies gradient descent for parameter
     updates.
 
-    :ivar W: Weight matrix of shape (in_features, out_features) initialized with
-        values to break symmetry.
-    :type W: Parameter
-    :ivar b: Bias vector of shape (1, out_features) initialized to zeros.
-    :type b: Parameter
-    :ivar dW: Gradient of the loss with respect to the weight matrix,
-        of shape (in_features, out_features).
-    :type dW: np.ndarray
-    :ivar db: Gradient of the loss with respect to the bias vector,
-        of shape (1, out_features).
-    :type db: np.ndarray
-    :ivar input: Input to the layer, stored during the forward pass,
-        of shape (batch_size, in_features).
-    :type input: np.ndarray
-    :ivar output: Output of the layer from the forward pass,
-        of shape (batch_size, out_features).
-    :type output: np.ndarray
+    :ivar in_features: Number of input features to the layer.
+    :type in_features: int
+    :ivar out_features: Number of output features from the layer.
+    :type out_features: int
     """
 
     def __init__(self, in_features: int, out_features: int):
@@ -72,7 +59,7 @@ class Dense(Layer):
         perform training directly. Instead, it should be used in a model
         context where the forward and backward passes are handled.
         """
-        raise NotImplementedError("Train method is not applicable for Dense layer.")
+        pass
 
     def eval(self) -> None:
         """
@@ -80,4 +67,4 @@ class Dense(Layer):
         perform evaluation directly. Instead, it should be used in a model
         context where the forward and backward passes are handled.
         """
-        raise NotImplementedError("Eval method is not applicable for Dense layer.")
+        pass

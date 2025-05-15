@@ -1,4 +1,5 @@
 import numpy as np
+
 from net.activations._base import Activation
 
 
