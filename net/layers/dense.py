@@ -39,7 +39,6 @@ class Dense(Layer):
         """
         grad_output: (batch_size, out_features)
         """
-        # Gradient w.r.t. weights and biases
         self.dW = self.input.T @ grad_output  # (in_features, out_features)
         self.db = np.sum(grad_output, axis=0, keepdims=True)  # (1, out_features)
 
