@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [tool.poetry.group.dev.dependencies]
-jupyterlab = "^4.4.2"
+jupyterlab = "^4.4.8"
 pytest = "^8.3.5"
 matplotlib = "^3.10.3"
 black = "^25.1.0"
